@@ -31,12 +31,24 @@ def generate(conf, dockerfile, dry_run):
         strands[strand] = val
 
     if "base" in strands:
-        contents += "ARG BASE_IMAGE={}\n".format(strands["base"])
-        contents += "FROM $BASE_IMAGE\n" 
+        baseImage = strands["base"]
+        del strands["base"]
+    
+    # Catch special cases
+    if "pytorch" in strands and "cuda" in strands:
+        baseImage = "pytorch:pytorch:{}-cuda{}-cudnn7-devel".format(strands["pytorch"], strands["cuda"])
+        del strands["pytorch"]
+        del strands["cuda"]
+    contents += "ARG BASE_IMAGE={}\n".format(baseImage)
+    contents += "FROM $BASE_IMAGE\n"
+
+    
+
     if dry_run:
         print(contents)
     else:
         dockerfile.write(contents)
+
             
 class MalformedConf(Exception):
     """Conf list item was not of the form `Dependency==Version`"""
