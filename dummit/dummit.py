@@ -1,24 +1,30 @@
 import click
+import docker
 import yaml
 
-import docker
 
 def hadolint(dockerfile):
     client = docker.from_env()
-    client.containers.run('hadolint/hadolint', '< {}'.format(dockerfile))
+    client.containers.run("hadolint/hadolint", "< {}".format(dockerfile))
+
 
 @click.group()
 def main():
     global __DBYAML__
     global strands_db
     __DBYAML__ = "strands.yml"
-    with open(__DBYAML__, 'rb') as f:
+    with open(__DBYAML__, "rb") as f:
         strands_db = yaml.load(f, Loader=yaml.FullLoader)
 
+
 @click.command()
-@click.argument('conf', required=True, type=click.File('rb'))
-@click.argument('dockerfile', required=False, type=click.File('w', encoding="ascii", errors="surrogateescape"))
-@click.option('--dry-run', is_flag=True, help="Print dockerfile")
+@click.argument("conf", required=True, type=click.File("rb"))
+@click.argument(
+    "dockerfile",
+    required=False,
+    type=click.File("w", encoding="ascii", errors="surrogateescape"),
+)
+@click.option("--dry-run", is_flag=True, help="Print dockerfile")
 def generate(conf, dockerfile, dry_run):
     conf = yaml.load(conf, Loader=yaml.FullLoader)
     contents = ""
@@ -41,7 +47,9 @@ def generate(conf, dockerfile, dry_run):
 
     # Catch special cases
     if "pytorch" in strands and "cuda" in strands:
-        baseImage = "pytorch/pytorch:{}-cuda{}-cudnn7-devel".format(strands["pytorch"], strands["cuda"])
+        baseImage = "pytorch/pytorch:{}-cuda{}-cudnn7-devel".format(
+            strands["pytorch"], strands["cuda"]
+        )
         del strands["pytorch"]
         del strands["cuda"]
 
@@ -63,7 +71,9 @@ def generate(conf, dockerfile, dry_run):
 
 class MalformedConf(Exception):
     """Conf list item was not of the form `Dependency==Version`"""
+
     pass
+
 
 main.add_command(generate)
 if __name__ == "__main__":

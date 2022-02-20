@@ -6,21 +6,21 @@ repos:
     name: isort
     stages: [commit]
     language: system
-    entry: pipenv run isort
+    entry: python -m isort .
     types: [python]
 
   - id: black
     name: black
     stages: [commit]
     language: system
-    entry: pipenv run black
+    entry: python -m black .
     types: [python]
 
   - id: flake8
     name: flake8
     stages: [commit]
     language: system
-    entry: pipenv run flake8
+    entry: python -m flake8 .
     types: [python]
     exclude: setup.py
 
@@ -28,22 +28,25 @@ repos:
     name: mypy
     stages: [commit]
     language: system
-    entry: pipenv run mypy
+    entry: python -m mypy dummit/
     types: [python]
     require_serial: true
-
-  - id: pytest
-    name: pytest
-    stages: [commit]
-    language: system
-    entry: pipenv run pytest
-    types: [python]
+    files: ^dummit/
     pass_filenames: false
 
-  - id: pytest-cov
-    name: pytest
-    stages: [push]
-    language: system
-    entry: pipenv run pytest --cov --cov-fail-under=100
-    types: [python]
-    pass_filenames: false
+  # - id: pytest
+  #   name: pytest
+  #   stages: [commit]
+  #   language: system
+  #   entry: python -m pytest dummit/
+  #   types: [python]
+  #   pass_filenames: false
+  #   files: ^dummit/
+
+  # - id: pytest-cov
+  #   name: pytest
+  #   stages: [push]
+  #   language: system
+  #   entry: python -m  pytest --cov --cov-fail-under=100
+  #   types: [python]
+  #   pass_filenames: false
