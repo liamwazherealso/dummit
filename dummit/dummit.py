@@ -1,6 +1,11 @@
 import click
 import yaml
-import os
+
+import docker
+
+def hadolint(dockerfile):
+    client = docker.from_env()
+    client.containers.run('hadolint/hadolint', '< {}'.format(dockerfile))
 
 @click.group()
 def main():
@@ -33,7 +38,7 @@ def generate(conf, dockerfile, dry_run):
     if "base" in conf:
         baseImage = conf["base"]
         del conf["base"]
-    
+
     # Catch special cases
     if "pytorch" in strands and "cuda" in strands:
         baseImage = "pytorch/pytorch:{}-cuda{}-cudnn7-devel".format(strands["pytorch"], strands["cuda"])
@@ -55,7 +60,7 @@ def generate(conf, dockerfile, dry_run):
     else:
         dockerfile.write(contents)
 
-            
+
 class MalformedConf(Exception):
     """Conf list item was not of the form `Dependency==Version`"""
     pass
