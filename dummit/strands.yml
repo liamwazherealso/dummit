@@ -2,3 +2,9 @@
 git: |
   RUN apt-get update
   RUN apt-get install git -y
+apex: |
+  WORKDIR /tmp/unique_for_apex
+  RUN SHA=ToUcHMe git clone https://github.com/NVIDIA/apex.git
+  WORKDIR /tmp/unique_for_apex/apex
+  RUN pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" .
+  WORKDIR $HOME
