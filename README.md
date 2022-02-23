@@ -41,3 +41,6 @@ FROM $BASE_IMAGE
 This package was created with Cookiecutter and the [sourcery-ai/python-best-practices-cookiecutter](https://github.com/sourcery-ai/python-best-practices-cookiecutter) project template.
 
 Named after David S. Dummit. 
+
+
+hadolint running method lovingly ripped off from [mperezi's hadolint-wrapper](https://github.com/mperezi/hadolint-wrapper)
