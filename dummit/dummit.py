@@ -126,14 +126,15 @@ def generate(conf, dockerfile, dry_run, strands_path, color):
 
     # Catch special cases
     if "pytorch" in strands and "cuda" in strands:
-        baseImage = "pytorch/pytorch:{}-cuda{}-cudnn7-devel".format(
-            strands["pytorch"], strands["cuda"]
+        baseImage = "pytorch/pytorch:{}-cuda{}-cudnn{}-{}".format(
+            strands["pytorch"], strands["cuda"], strands["cudnn"], strands["mode"]
         )
         del strands["pytorch"]
         del strands["cuda"]
+        del strands["cudnn"]
+        del strands["mode"]
 
-    contents += "ARG BASE_IMAGE={}\n".format(baseImage)
-    contents += "FROM $BASE_IMAGE\n"
+    contents += "FROM {}\n".format(baseImage)
 
     # Add remaining strands
     for strand, value in strands.items():
